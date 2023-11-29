@@ -1,0 +1,22 @@
+{
+    "name": "tryhardy/bitrix-filter",
+    "description": "Фильтр для bitrix ORM",
+    "homepage": "https://github.com/tryhardy/bitrix-filter",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Наталия Гаращенко",
+            "email": "n.garashchenko@uplab.ru"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4",
+        "ext-mbstring": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Tryhardy\\BitrixFilter\\": "src/"
+        }
+    }
+}
