@@ -1,4 +1,6 @@
 # Пример использования
+Формирует filter и runtime поля для ElementTable::getList  
+    
 ```php
 <?php
 use Tryhardy\BitrixFilter\ElementsFilter;
