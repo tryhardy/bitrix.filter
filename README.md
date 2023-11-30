@@ -13,3 +13,18 @@ $filter->add('SECTION_ID|IBLOCK_SECTION.ID|IBLOCK_SECTION_ID', 1);
 //Добавить фильтр по разделу с подразделами
 $filter->addSection('SECTION_ID|IBLOCK_SECTION.ID|IBLOCK_SECTION_ID', 1, true);
 ```
+
+# Composer
+```json
+{
+  "require": {
+    "tryhardy/bitrix-filter": "dev-master"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/tryhardy/bitrix-filter.git"
+    }
+  ]
+}
+```
