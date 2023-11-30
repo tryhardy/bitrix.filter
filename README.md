@@ -2,6 +2,7 @@
 ```php
 <?php
 use Tryhardy\BitrixFilter\ElementsFilter;
+use \Bitrix\Iblock\ElementTable;
 
 $filter = ElementsFilter::getInstance();
 $filter->add('IBLOCK_ID', 1);
@@ -12,6 +13,15 @@ $filter->add('PROPERTY_TAGS', ['tag1', 'tag2']);
 $filter->add('SECTION_ID|IBLOCK_SECTION.ID|IBLOCK_SECTION_ID', 1);
 //Добавить фильтр по разделу с подразделами
 $filter->addSection('SECTION_ID|IBLOCK_SECTION.ID|IBLOCK_SECTION_ID', 1, true);
+
+$arRuntime = $filter->getRuntime();
+$arFilter = $filter->getFilter();
+
+$dbItems = ElementTable::getList([
+    "filter" => $arFilter,
+    "select" => ['//Selected fields'],
+    'runtime' => $arRuntime
+]);
 ```
 
 # Composer
