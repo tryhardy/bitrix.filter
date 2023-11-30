@@ -2,7 +2,8 @@
 
 namespace Tryhardy\BitrixFilter\Traits;
 
-use Tryhardy\BitrixFilter\ElementsFilter;
+use Bitrix\Main\Loader;
+use Exception;
 
 trait FilterTrait
 {
@@ -12,8 +13,15 @@ trait FilterTrait
 	protected array $runtime = [];      //массив полей для runtime
 	protected array $resources = [];    //реестр для хранения ассоциаций между runtime и filter
 
+	/**
+	 * @throws Exception
+	 */
 	protected function __construct()
-	{}
+	{
+		if (!Loader::includeModule("iblock")) {
+			throw new Exception("Module iblock is not installed");
+		}
+	}
 
 	public static function getInstance() : self
 	{

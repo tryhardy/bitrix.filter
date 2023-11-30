@@ -70,7 +70,7 @@ class ElementsFilter
 	 * @return array
 	 * @throws Exception
 	 */
-	private function setSections(string $code, array|int $value, bool $includeSubsections = false) : array
+	private function setSections(string $code, $value, bool $includeSubsections = false) : array
 	{
 		$fullCode = $code;
 		$matches = $this->getMatches($code, $this->sectionMatchCondition);
