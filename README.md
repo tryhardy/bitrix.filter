@@ -1,5 +1,5 @@
 # Пример использования
-Формирует filter и runtime поля для ElementTable::getList  
+Формирует filter и runtime поля для \Bitrix\Iblock\ElementTable::getList  
     
 ```php
 <?php
