@@ -2,12 +2,15 @@
 
 namespace Tryhardy\BitrixFilter\Traits;
 
-trait RegistryTrait
+use Tryhardy\BitrixFilter\ElementsFilter;
+
+trait FilterTrait
 {
 	protected static self $instance;
-	protected array $filter = [];
-	protected array $runtime = [];
-	protected array $resources = [];
+
+	protected array $filter = [];       //массив полей для filter
+	protected array $runtime = [];      //массив полей для runtime
+	protected array $resources = [];    //реестр для хранения ассоциаций между runtime и filter
 
 	protected function __construct()
 	{}
@@ -23,10 +26,10 @@ trait RegistryTrait
 
 	/**
 	 * Get filter param by key
-	 * @param $key
+	 * @param string $key
 	 * @return mixed|null
 	 */
-	public function get(string $key)
+	public function get(string $key) : mixed
 	{
 		if (isset($this->filter[$key])) {
 			return $this->filter[$key];
@@ -53,13 +56,20 @@ trait RegistryTrait
 		return $this->filter;
 	}
 
+	protected function getMatches(string $key, $condition) : array
+	{
+		$matches = [];
+		preg_match($condition, $key, $matches);
+		return $matches;
+	}
+
 	/**
 	 * Set filter param by key
 	 * @param string $key
 	 * @param $value
 	 * @return $this
 	 */
-	public function set(string $key, $value) : self
+	public function add(string $key, $value) : self
 	{
 		$this->filter[$key] = $value;
 		return $this;
@@ -68,7 +78,7 @@ trait RegistryTrait
 	/**
 	 * Remove param from filter by key
 	 * @param string $key
-	 * @return $this
+	 * @return FilterTrait|ElementsFilter
 	 */
 	public function remove(string $key) : self
 	{
@@ -84,6 +94,8 @@ trait RegistryTrait
 					}
 				}
 			}
+
+			unset($this->resources[$key]);
 		}
 		else {
 			unset($this->filter[$key]);
