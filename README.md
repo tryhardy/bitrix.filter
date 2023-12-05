@@ -1,5 +1,6 @@
 # Пример использования
-Формирует filter и runtime поля для \Bitrix\Iblock\ElementTable::getList  
+Формирует filter и runtime поля для \Bitrix\Iblock\ElementTable::getList
+Не работает оператор **!** для множественных свойств
     
 ```php
 <?php
