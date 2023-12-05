@@ -22,7 +22,9 @@ $arFilter = $filter->getFilter();
 
 $dbItems = ElementTable::getList([
     "filter" => $arFilter,
-    "select" => ['//Selected fields'],
+    "select" => [
+        //Selected fields'
+    ],
     'runtime' => $arRuntime
 ]);
 ```
