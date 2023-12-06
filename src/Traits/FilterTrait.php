@@ -37,7 +37,7 @@ trait FilterTrait
 	 * @param string $key
 	 * @return mixed|null
 	 */
-	public function get(string $key) : mixed
+	public function get(string $key)
 	{
 		if (isset($this->filter[$key])) {
 			return $this->filter[$key];
