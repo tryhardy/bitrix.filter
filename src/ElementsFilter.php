@@ -263,4 +263,12 @@ class ElementsFilter
 
 		return false;
 	}
+
+	public function setRandomSort()
+	{
+		$this->runtime['RAND'] = [
+			"data_type" => "integer",
+			"expression" => ["RAND()", "ID"],
+		];
+	}
 }

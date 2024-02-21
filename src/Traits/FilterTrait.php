@@ -4,6 +4,7 @@ namespace Tryhardy\BitrixFilter\Traits;
 
 use Bitrix\Main\Loader;
 use Exception;
+use Tryhardy\BitrixFilter\ElementsFilter;
 
 trait FilterTrait
 {
@@ -25,9 +26,7 @@ trait FilterTrait
 
 	public static function getInstance() : self
 	{
-		if (!isset(self::$instance)) {
-			self::$instance = new static();
-		}
+		self::$instance = new static();
 
 		return self::$instance;
 	}
@@ -86,7 +85,7 @@ trait FilterTrait
 	/**
 	 * Remove param from filter by key
 	 * @param string $key
-	 * @return FilterTrait|ElementsFilter
+	 * @return ElementsFilter
 	 */
 	public function remove(string $key) : self
 	{
