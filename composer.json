@@ -1,7 +1,7 @@
 {
-    "name": "tryhardy/bitrix-filter",
+    "name": "tryhardy/bitrix.filter",
     "description": "Фильтр для bitrix ORM",
-    "homepage": "https://github.com/tryhardy/bitrix-filter",
+    "homepage": "https://github.com/tryhardy/bitrix.filter",
     "type": "library",
     "authors": [
         {
