@@ -3,15 +3,9 @@
     "description": "Фильтр для bitrix ORM",
     "homepage": "https://github.com/tryhardy/bitrix.filter",
     "type": "library",
-    "authors": [
-        {
-            "name": "Наталия Гаращенко",
-            "email": "n.garashchenko@uplab.ru"
-        }
-    ],
     "license": "MIT",
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.1",
         "ext-mbstring": "*"
     },
     "autoload": {

@@ -1,6 +1,7 @@
 # Пример использования
 Формирует filter и runtime поля для \Bitrix\Iblock\ElementTable::getList  
 Не работает оператор **!** для множественных свойств
+Не работает для инфоблоки 2.0
     
 ```php
 <?php
@@ -34,12 +35,12 @@ $dbItems = ElementTable::getList([
 ```json
 {
   "require": {
-    "tryhardy/bitrix-filter": "dev-master"
+    "tryhardy/bitrix.filter": "dev-master"
   },
   "repositories": [
     {
       "type": "git",
-      "url": "https://github.com/tryhardy/bitrix-filter.git"
+      "url": "https://github.com/tryhardy/bitrix.filter.git"
     }
   ]
 }
