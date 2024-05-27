@@ -63,7 +63,7 @@ trait FilterTrait
 		return $this->filter;
 	}
 
-	protected function getMatches(string $key, $condition) : array
+	protected static function getMatches(string $key, $condition) : array
 	{
 		$matches = [];
 		preg_match($condition, $key, $matches);

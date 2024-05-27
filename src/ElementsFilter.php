@@ -12,8 +12,8 @@ class ElementsFilter
 {
 	use FilterTrait;
 
-	private string $sectionMatchCondition = '/^(=[%=]?|%[=]?|>[<=]?|<[>=]?|![=@%]?(><|=%|%=|==)?|@|)(SECTION_ID|IBLOCK_SECTION.ID|IBLOCK_SECTION_ID)/';
-	private string $propertyMatchCondition = '/^(\?[=%]?|=[%=]?|%[=]?|>[<=]?|<[>=]?|![=@%]?(><|=%|%=|==)?|@|)(PROPERTY_|)(.*)$/';
+	private static string $sectionMatchCondition = '/^(=[%=]?|%[=]?|>[<=]?|<[>=]?|![=@%]?(><|=%|%=|==)?|@|)(SECTION_ID|IBLOCK_SECTION.ID|IBLOCK_SECTION_ID)/';
+	private static string $propertyMatchCondition = '/^(\?[=%]?|=[%=]?|%[=]?|>[<=]?|<[>=]?|![=@%]?(><|=%|%=|==)?|@|)(PROPERTY_|)(.*)$/';
 
 	/**
 	 * Set value to filter
@@ -28,12 +28,12 @@ class ElementsFilter
 		$runtime = [];
 
 		//Формируем фильтр по свойствам
-		if ($this->checkFieldFilter($key, $this->propertyMatchCondition)) {
+		if (static::checkFieldFilter($key, static::$propertyMatchCondition)) {
 			list($filter, $runtime) = $this->setProperty($key, $value);
 		}
 
 		//Формируем фильтр по разделам
-		if ($this->checkFieldFilter($key, $this->sectionMatchCondition)) {
+		if (static::checkFieldFilter($key, static::$sectionMatchCondition)) {
 			list($filter, $runtime) = $this->setSections($key, $value);
 		}
 
@@ -54,7 +54,7 @@ class ElementsFilter
 		$runtime = [];
 
 		//Формируем фильтр по разделам
-		if ($this->checkFieldFilter($key, $this->sectionMatchCondition)) {
+		if ($this->checkFieldFilter($key, static::$sectionMatchCondition)) {
 			list($filter, $runtime) = $this->setSections($key, $value, $includeSubsections);
 		}
 
@@ -73,7 +73,7 @@ class ElementsFilter
 	private function setSections(string $code, $value, bool $includeSubsections = false) : array
 	{
 		$fullCode = $code;
-		$matches = $this->getMatches($code, $this->sectionMatchCondition);
+		$matches = static::getMatches($code, static::$sectionMatchCondition);
 		$arRuntime = [];
 		$arFilter = [];
 
@@ -85,27 +85,50 @@ class ElementsFilter
 
 		//Если выборка по одному разделу, включая дочерние подразделы
 		if ($includeSubsections && !is_array($value)) {
-			$DBSection = SectionTable::getByPrimary($value, [
+
+			$DBSection = SectionTable::getList([
 				'filter' => [
 					'IBLOCK_ID' => $iblockId,
-					'ACTIVE' => 'Y'
+					'ACTIVE' => 'Y',
+					'CHILD_SECTION.ACTIVE' => 'Y',
+					'ID' => $value
 				],
-				'select' => ['LEFT_MARGIN', 'RIGHT_MARGIN'],
-			])->fetch();
+				'runtime' => [
+					'CHILD_SECTION' => [
+						'data_type' => '\Bitrix\Iblock\SectionTable',
+						'reference' => [
+							'<=this.LEFT_MARGIN' => 'ref.LEFT_MARGIN',
+							'>=this.RIGHT_MARGIN' => 'ref.RIGHT_MARGIN',
+							'this.IBLOCK_ID' => 'ref.IBLOCK_ID',
+						]
+					]
+				],
+				'select' => ['CHILD_ID' => 'CHILD_SECTION.ID'],
+			])->fetchAll();
+			$allActiveSectionIds = array_column($DBSection, 'CHILD_ID');
 
-			//Есть ли в фильтре условие отрицания (!)
-			if (stripos($sectionCondition, '!') !== false) {
-				$arFilter[] = [
-					'LOGIC' => 'OR',
-					"<IBLOCK_SECTION.LEFT_MARGIN" => $DBSection['LEFT_MARGIN'],
-					'>IBLOCK_SECTION.RIGHT_MARGIN' => $DBSection['RIGHT_MARGIN'],
+			if (!empty($allActiveSectionIds)) {
+				$arRuntime = [
+					'IBLOCK_ELEMENT_SECTION' => [
+						'data_type' => '\Bitrix\Iblock\SectionElementTable',
+						'reference' => [
+							'=this.ID' => 'ref.IBLOCK_ELEMENT_ID',
+						],
+						'join_type' => "LEFT"
+					]
 				];
-			}
-			else {
-				$arFilter = [
-					'>=IBLOCK_SECTION.LEFT_MARGIN' => $DBSection['LEFT_MARGIN'],
-					'<=IBLOCK_SECTION.RIGHT_MARGIN' => $DBSection['RIGHT_MARGIN'],
-				];
+
+				//Есть ли в фильтре условие отрицания (!)
+				if (stripos($sectionCondition, '!') !== false) {
+					$arFilter[] = [
+						'!IBLOCK_ELEMENT_SECTION.IBLOCK_SECTION_ID' => $allActiveSectionIds,
+					];
+				}
+				else {
+					$arFilter = [
+						'IBLOCK_ELEMENT_SECTION.IBLOCK_SECTION_ID' => $allActiveSectionIds,
+					];
+				}
 			}
 		}
 		//Если выборка по нескольким разделам, включая дочерние подразделы
@@ -236,7 +259,7 @@ class ElementsFilter
 	 */
 	private function setToFilter(string $key, $value, array $filter = [], array $runtime = []) : ElementsFilter
 	{
-		if (!empty($filter) && !empty($runtime)) {
+		if (!empty($filter) || !empty($runtime)) {
 			$this->filter = array_merge($this->filter, $filter);
 			$this->runtime = array_merge($this->runtime, $runtime);
 		}
@@ -253,9 +276,9 @@ class ElementsFilter
 	 * @param string $condition
 	 * @return bool
 	 */
-	private function checkFieldFilter(string $key, string $condition) : bool
+	private static function checkFieldFilter(string $key, string $condition) : bool
 	{
-		$matches = $this->getMatches($key, $condition);
+		$matches = static::getMatches($key, $condition);
 
 		if (!empty($matches)) {
 			return (bool) $matches[3];
