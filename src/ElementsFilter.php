@@ -293,5 +293,7 @@ class ElementsFilter
 			"data_type" => "integer",
 			"expression" => ["RAND()", "ID"],
 		];
+
+		return $this;
 	}
 }

@@ -24,11 +24,9 @@ trait FilterTrait
 		}
 	}
 
-	public static function getInstance() : self
+	public static function getInstance(bool $fromStatic = true) : self
 	{
-		self::$instance = new static();
-
-		return self::$instance;
+		return new static();
 	}
 
 	/**
