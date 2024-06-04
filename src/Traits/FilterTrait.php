@@ -26,7 +26,14 @@ trait FilterTrait
 
 	public static function getInstance(bool $fromStatic = true) : self
 	{
-		return new static();
+		self::$instance = new static();
+
+		if ($fromStatic) {
+			return self::$instance;
+		}
+		else {
+			return new static();
+		}
 	}
 
 	/**
