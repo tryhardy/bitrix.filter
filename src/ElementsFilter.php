@@ -12,6 +12,8 @@ class ElementsFilter
 {
 	use FilterTrait;
 
+	protected bool $hasIblockElementSectionRuntime = false;
+
 	private static string $sectionMatchCondition = '/^(=[%=]?|%[=]?|>[<=]?|<[>=]?|![=@%]?(><|=%|%=|==)?|@|)(SECTION_ID|IBLOCK_SECTION.ID|IBLOCK_SECTION_ID)/';
 	private static string $propertyMatchCondition = '/^(\?[=%]?|=[%=]?|%[=]?|>[<=]?|<[>=]?|![=@%]?(><|=%|%=|==)?|@|)(PROPERTY_|)(.*)$/';
 
@@ -108,6 +110,7 @@ class ElementsFilter
 			$allActiveSectionIds = array_column($DBSection, 'CHILD_ID');
 
 			if (!empty($allActiveSectionIds)) {
+				$this->hasIblockElementSectionRuntime = true;
 				$arRuntime = [
 					'IBLOCK_ELEMENT_SECTION' => [
 						'data_type' => '\Bitrix\Iblock\SectionElementTable',
@@ -295,5 +298,10 @@ class ElementsFilter
 		];
 
 		return $this;
+	}
+
+	public function hasIblockElementSectionRuntime()
+	{
+		return $this->hasIblockElementSectionRuntime;
 	}
 }
